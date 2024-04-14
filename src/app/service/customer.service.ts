@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, Observable, tap, throwError} from 'rxjs';
-import {CustomHttpResponse, Page} from '../interface/appstates';
+import { CustomHttpResponse, CustomerState, Page, Profile } from '../interface/appstates';
 import {User} from '../interface/user';
 import {Stats} from "../interface/stats";
 import {Customer} from "../interface/customer";
@@ -11,12 +11,35 @@ export class CustomerService {
 
   private readonly server: string = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) { }
 
   customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page & User & Stats>>>
     this.http.get<CustomHttpResponse<Page & User & Stats>>
     (`${this.server}/customer/list?page=${page}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  customer$ = (customerId: number) => <Observable<CustomHttpResponse<CustomerState>>>
+    this.http.get<CustomHttpResponse<CustomerState>>
+    (`${this.server}/customer/get/${customerId}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  update$ = (customer: Customer) => <Observable<CustomHttpResponse<CustomerState>>>
+    this.http.put<CustomHttpResponse<CustomerState>>
+    (`${this.server}/customer/update`, customer)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  searchCustomers$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page & User>>>
+    this.http.get<CustomHttpResponse<Page & User>>
+    (`${this.server}/customer/search?name=${name}&page=${page}`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
