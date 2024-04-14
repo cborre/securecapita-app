@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { EventType, Router } from '@angular/router';
-import { Observable, BehaviorSubject, map, startWith, catchError, of } from 'rxjs';
-import { DataState } from '../../enum/datastate.enum';
-import { CustomHttpResponse, Page, Profile } from '../../interface/appstates';
-import { Customer } from '../../interface/customer';
-import { State } from '../../interface/state';
-import { User } from '../../interface/user';
-import { CustomerService } from '../../service/customer.service';
-import { UserService } from '../../service/user.service';
+import {Component, OnInit} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {Router} from '@angular/router';
+import {Observable, BehaviorSubject, map, startWith, catchError, of} from 'rxjs';
+import {DataState} from '../../enum/datastate.enum';
+import {CustomHttpResponse, Page} from '../../interface/appstates';
+import {Customer} from '../../interface/customer';
+import {State} from '../../interface/state';
+import {User} from '../../interface/user';
+import {CustomerService} from '../../service/customer.service';
 
 @Component({
   selector: 'app-customers',
@@ -16,6 +15,7 @@ import { UserService } from '../../service/user.service';
   styleUrls: ['./customers.component.css']
 })
 export class CustomersComponent implements OnInit {
+
   customersState$: Observable<State<CustomHttpResponse<Page & User>>>;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Page & User>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
@@ -26,7 +26,8 @@ export class CustomersComponent implements OnInit {
   showLogs$ = this.showLogsSubject.asObservable();
   readonly DataState = DataState;
 
-  constructor(private router: Router, private customerService: CustomerService) { }
+  constructor(private router: Router, private customerService: CustomerService) {
+  }
 
   ngOnInit(): void {
     this.customersState$ = this.customerService.searchCustomers$()
@@ -34,11 +35,11 @@ export class CustomersComponent implements OnInit {
         map(response => {
           console.log(response);
           this.dataSubject.next(response);
-          return { dataState: DataState.LOADED, appData: response };
+          return {dataState: DataState.LOADED, appData: response};
         }),
-        startWith({ dataState: DataState.LOADING }),
+        startWith({dataState: DataState.LOADING}),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, error })
+          return of({dataState: DataState.ERROR, error})
         })
       )
   }
@@ -50,11 +51,11 @@ export class CustomersComponent implements OnInit {
         map(response => {
           console.log(response);
           this.dataSubject.next(response);
-          return { dataState: DataState.LOADED, appData: response };
+          return {dataState: DataState.LOADED, appData: response};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, error })
+          return of({dataState: DataState.ERROR, error})
         })
       )
   }
@@ -66,11 +67,11 @@ export class CustomersComponent implements OnInit {
           console.log(response);
           this.dataSubject.next(response);
           this.currentPageSubject.next(pageNumber);
-          return { dataState: DataState.LOADED, appData: response };
+          return {dataState: DataState.LOADED, appData: response};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
-          return of({ dataState: DataState.LOADED, error, appData: this.dataSubject.value })
+          return of({dataState: DataState.LOADED, error, appData: this.dataSubject.value})
         })
       )
   }

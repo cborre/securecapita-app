@@ -6,7 +6,7 @@ import {Customer} from '../../interface/customer';
 import {State} from '../../interface/state';
 import {User} from '../../interface/user';
 import {CustomerService} from '../../service/customer.service';
-import {UserService} from '../../service/user.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
   showLogs$ = this.showLogsSubject.asObservable();
   readonly DataState = DataState;
 
-  constructor(private userService: UserService, private customerService: CustomerService) {
+  constructor(private router: Router, private customerService: CustomerService) {
   }
 
   ngOnInit(): void {
@@ -64,5 +64,6 @@ export class HomeComponent implements OnInit {
   }
 
   selectCustomer(customer: Customer): void {
+    this.router.navigate([`/customers/${customer.id}`]);
   }
 }
