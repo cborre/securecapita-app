@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, Observable, tap, throwError} from 'rxjs';
-import { CustomHttpResponse, CustomerState, Page, Profile } from '../interface/appstates';
+import {CustomHttpResponse, CustomerState, Page} from '../interface/appstates';
 import {User} from '../interface/user';
 import {Stats} from "../interface/stats";
 import {Customer} from "../interface/customer";
@@ -11,7 +11,8 @@ export class CustomerService {
 
   private readonly server: string = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page & User & Stats>>>
     this.http.get<CustomHttpResponse<Page & User & Stats>>
@@ -68,4 +69,5 @@ export class CustomerService {
     }
     return throwError(() => errorMessage);
   }
+
 }
