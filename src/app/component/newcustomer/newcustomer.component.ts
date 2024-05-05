@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Observable, BehaviorSubject, map, startWith, catchError, of } from 'rxjs';
-import { DataState } from '../../enum/datastate.enum';
-import { CustomHttpResponse, Page } from '../../interface/appstates';
-import { State } from '../../interface/state';
-import { User } from '../../interface/user';
-import { CustomerService } from '../../service/customer.service';
+import {Component, OnInit} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {Observable, BehaviorSubject, map, startWith, catchError, of} from 'rxjs';
+import {DataState} from '../../enum/datastate.enum';
+import {CustomHttpResponse, Page} from '../../interface/appstates';
+import {State} from '../../interface/state';
+import {User} from '../../interface/user';
+import {CustomerService} from '../../service/customer.service';
+import {Customer} from "../../interface/customer";
 
 @Component({
   selector: 'app-newcustomer',
@@ -13,13 +14,14 @@ import { CustomerService } from '../../service/customer.service';
   styleUrls: ['./newcustomer.component.css']
 })
 export class NewcustomerComponent implements OnInit {
-  newCustomerState$: Observable<State<CustomHttpResponse<Page & User>>>;
-  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page & User>>(null);
+  newCustomerState$: Observable<State<CustomHttpResponse<Page<Customer> & User>>>;
+  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page<Customer> & User>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
   readonly DataState = DataState;
 
-  constructor(private customerService: CustomerService) { }
+  constructor(private customerService: CustomerService) {
+  }
 
   ngOnInit(): void {
     this.newCustomerState$ = this.customerService.customers$()
@@ -27,11 +29,11 @@ export class NewcustomerComponent implements OnInit {
         map(response => {
           console.log(response);
           this.dataSubject.next(response);
-          return { dataState: DataState.LOADED, appData: response };
+          return {dataState: DataState.LOADED, appData: response};
         }),
-        startWith({ dataState: DataState.LOADING }),
+        startWith({dataState: DataState.LOADING}),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, error })
+          return of({dataState: DataState.ERROR, error})
         })
       )
   }
@@ -42,14 +44,14 @@ export class NewcustomerComponent implements OnInit {
       .pipe(
         map(response => {
           console.log(response);
-          newCustomerForm.reset({ type: 'INDIVIDUAL', status: 'ACTIVE' });
+          newCustomerForm.reset({type: 'INDIVIDUAL', status: 'ACTIVE'});
           this.isLoadingSubject.next(false);
-          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+          return {dataState: DataState.LOADED, appData: this.dataSubject.value};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
           this.isLoadingSubject.next(false);
-          return of({ dataState: DataState.LOADED, error })
+          return of({dataState: DataState.LOADED, error})
         })
       )
   }
