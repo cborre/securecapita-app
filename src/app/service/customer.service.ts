@@ -15,8 +15,8 @@ export class CustomerService {
   constructor(private http: HttpClient) {
   }
 
-  customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page & User & Stats>>>
-    this.http.get<CustomHttpResponse<Page & User & Stats>>
+  customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page<Customer> & User & Stats>>>
+    this.http.get<CustomHttpResponse<Page<Customer> & User & Stats>>
     (`${this.server}/customer/list?page=${page}`)
       .pipe(
         tap(console.log),
@@ -39,8 +39,8 @@ export class CustomerService {
         catchError(this.handleError)
       );
 
-  searchCustomers$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page & User>>>
-    this.http.get<CustomHttpResponse<Page & User>>
+  searchCustomers$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page<Customer> & User>>>
+    this.http.get<CustomHttpResponse<Page<Customer> & User>>
     (`${this.server}/customer/search?name=${name}&page=${page}`)
       .pipe(
         tap(console.log),
@@ -71,13 +71,13 @@ export class CustomerService {
         catchError(this.handleError)
       );
 
-  /*invoices$ = (page: number = 0) => <Observable<CustomHttpResponse<Page<Invoice> & User>>>
+  invoices$ = (page: number = 0) => <Observable<CustomHttpResponse<Page<Invoice> & User>>>
     this.http.get<CustomHttpResponse<Page<Invoice> & User>>
     (`${this.server}/customer/invoice/list?page=${page}`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
-      );*/
+      );
 
   invoice$ = (invoiceId: number) => <Observable<CustomHttpResponse<Customer & Invoice & User>>>
     this.http.get<CustomHttpResponse<Customer & Invoice & User>>
